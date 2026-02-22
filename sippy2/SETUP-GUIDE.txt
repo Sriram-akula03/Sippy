@@ -1,0 +1,168 @@
+╔══════════════════════════════════════════════════════════════╗
+║           SIPPY WEBSITE — COMPLETE SETUP GUIDE             ║
+╚══════════════════════════════════════════════════════════════╝
+
+WEBSITE STRUCTURE
+-----------------
+sippy/
+├── index.html              ← Home page
+├── css/
+│   ├── global.css          ← Shared styles (navbar, footer, chatbot)
+│   ├── home.css            ← Home page styles
+│   ├── product.css         ← Product page styles
+│   ├── gallery.css         ← Gallery page styles
+│   ├── checkout.css        ← Checkout page styles
+│   └── contact.css         ← Contact page styles
+├── js/
+│   ├── common.js           ← Shared JS (navbar, footer, chatbot, animations)
+│   └── emailjs-init.js     ← Email configuration (edit this!)
+├── images/                 ← Product images (already included)
+└── pages/
+    ├── product.html        ← Product detail page
+    ├── gallery.html        ← Photo gallery page
+    ├── checkout.html       ← Checkout + Razorpay payment
+    ├── contact.html        ← Contact & enquiry form
+    └── faq.html            ← FAQ page
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1: RAZORPAY SETUP (for payment processing)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to https://razorpay.com and create a business account
+2. Complete KYC verification (required for live payments)
+3. Go to: Settings → API Keys → Generate Test Key
+4. Copy your KEY ID (starts with "rzp_test_..." for test mode)
+   or "rzp_live_..." for production)
+
+5. Open: pages/checkout.html
+   Find this line (around line 18 of the <script> section):
+   
+   const RAZORPAY_KEY_ID = 'YOUR_RAZORPAY_KEY_ID';
+   
+   Replace with your actual key:
+   const RAZORPAY_KEY_ID = 'rzp_live_xxxxxxxxxx';
+
+IMPORTANT NOTE ABOUT RAZORPAY:
+- In TEST mode: Use test card 4111 1111 1111 1111, any CVV, any future date
+- In LIVE mode: Switch Key ID to rzp_live_xxx and complete Razorpay KYC
+- For production: Create orders server-side using Razorpay API for security
+  See: https://razorpay.com/docs/payments/orders/
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2: EMAILJS SETUP (for order & enquiry emails)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EmailJS sends emails directly from the browser — no server needed.
+Free plan = 200 emails/month (great for starting out).
+
+1. Go to https://emailjs.com and sign up FREE
+   (use smartkettlestore@gmail.com)
+
+2. In dashboard → Email Services → Add New Service
+   → Choose Gmail → Connect smartkettlestore@gmail.com
+   → Note your Service ID (e.g., "service_abc123")
+
+3. Create TWO Email Templates:
+
+   TEMPLATE 1 — Order Notification (to store owner):
+   - Name: "Order Notification"
+   - To Email: {{to_email}}
+   - Subject: {{subject}}
+   - Body: {{message}}
+   - Note your Template ID (e.g., "template_order")
+
+   TEMPLATE 2 — Enquiry / Confirmation (to customers):
+   - Name: "Customer Reply"
+   - To Email: {{to_email}}
+   - Subject: {{subject}}
+   - Body: {{message}}
+   - Note your Template ID (e.g., "template_enquiry")
+
+4. Get your Public Key:
+   Dashboard → Account → API Keys → Copy Public Key
+
+5. Open: js/emailjs-init.js
+   Replace these 4 values:
+
+   window.EMAILJS_PUBLIC_KEY    = 'your_public_key_here';
+   window.EMAILJS_SERVICE_ID    = 'service_abc123';
+   window.EMAILJS_ORDER_TEMPLATE   = 'template_order';
+   window.EMAILJS_ENQUIRY_TEMPLATE = 'template_enquiry';
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3: HOSTING (go live!)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPTION A — Netlify (FREE, recommended):
+1. Go to https://netlify.com → Sign up free
+2. Drag the entire "sippy" folder onto the deploy area
+3. Your site is live in 60 seconds with a URL like "sippy-abc.netlify.app"
+4. To use custom domain: Netlify → Domain Settings → Add custom domain
+
+OPTION B — Hostinger (~₹99/month, for custom domain):
+1. Buy hosting at hostinger.in
+2. Upload the "sippy" folder contents via File Manager to public_html/
+3. Point your domain to Hostinger nameservers
+
+OPTION C — GitHub Pages (FREE):
+1. Create a GitHub account
+2. Create a new repository named "sippy"
+3. Upload all files → Settings → Pages → Deploy from main branch
+4. Your site: username.github.io/sippy
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EDITING THE WEBSITE (easy guide)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open any .html or .css file in a text editor:
+- Windows: Notepad++ (free) or VS Code (free, recommended)
+- Mac: TextEdit or VS Code
+
+COMMON EDITS:
+
+→ Change price: Search "5,999" across all files, replace with new price
+  Also change "599900" in checkout.html (Razorpay amount in paise)
+
+→ Change product name: Search "Sippy" and replace as needed
+
+→ Change phone number: Search "8985656181" and replace
+
+→ Change email: Search "smartkettlestore@gmail.com" and replace
+
+→ Change colors: Open css/global.css, edit the :root { } variables at top:
+  --gold: #C9923A;     ← accent color
+  --dark: #1C1410;     ← dark text/backgrounds
+
+→ Add a new page: Copy any existing page, update nav active class,
+  add a link in common.js injectNav() function
+
+→ Change images: Replace files in images/ folder keeping the same names
+  Or update <img src="..."> references in HTML files
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PAGES QUICK REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Home        → index.html
+Product     → pages/product.html
+Gallery     → pages/gallery.html
+Checkout    → pages/checkout.html  ← Razorpay payment here
+Contact     → pages/contact.html
+FAQ         → pages/faq.html
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SUPPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Razorpay docs:  https://razorpay.com/docs/
+EmailJS docs:   https://www.emailjs.com/docs/
+Netlify docs:   https://docs.netlify.com/
+
+
+Good luck with Sippy! ☕🇮🇳
